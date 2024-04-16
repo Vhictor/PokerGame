@@ -33,8 +33,4 @@ public enum CardValue {
         throw new IllegalArgumentException("Invalid card symbol: " + symbol);
     }
 
-    public int getValue() {
-        return this.value;
-    }
-
 }
