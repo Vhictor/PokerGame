@@ -11,7 +11,7 @@ This project implements a Poker Game in Java. It evaluates poker hands and deter
 - [How the solution works](#How-it-works)
 - [Approaches new to me](#Approaches-new-to-me)
 - [What I don't like about the Solution](#What-I-Don't-like)
-- [What I like about rge Solution](#What-I-Like)
+- [What I like about the Solution](#What-I-Like)
 
 
 ## Technology Used
@@ -86,10 +86,10 @@ I've not used Streams API for matheamtical equations so I learnt  a lot more on 
 
 ## What i don't like
 
-I think I can still make it simpler by creating a Record for Card and then use the Card all through rather than using hands a string.
+I think I can still make it simpler by creating a Record for Card, pass value and suits and then use the Card all through rather than using hands a string arrays.
 
 ## What I like
 
-I avoided using traditional for loop in all my codebase and also used Javadoc to explain each method giving anyone who reads to understand what each method does at a glance.
+I avoided using traditional for loop in all my codebase and also used Javadoc to explain each method giving anyone who reads it to understand what each method does at a glance.
 
 
