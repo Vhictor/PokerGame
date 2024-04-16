@@ -53,7 +53,7 @@ The goal of this project is to determine how many hands Player 1 wins out of the
 
 To run the Poker Game and determine the number of hands Player 1 wins:
 
-1. Clone the repository:
+1. Clone the repository: (Checkout to develop if you which to contribute)
 
     ```
     git clone https://github.com/Vhictor/PokerGame.git
