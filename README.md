@@ -8,7 +8,11 @@ This project implements a Poker Game in Java. It evaluates poker hands and deter
 - [Rules of Poker](#rules-of-poker)
 - [Data](#data)
 - [Project Goal](#project-goal)
-- [Usage](#usage)
+- [How the solution works](#How-it-works)
+- [Approaches new to me](#Approaches-new-to-me)
+- [What I don't like about the Solution](#What-I-Don't-like)
+- [What I like about rge Solution](#What-I-Like)
+
 
 ## Technology Used
 
@@ -74,3 +78,18 @@ To run the Poker Game and determine the number of hands Player 1 wins:
     ```
 
 5. The program will read the `poker.txt` file, evaluate the hands, determine the winner, and display the number of hands Player 1 wins.
+
+## Approaches new to me
+
+I had to learn to understand how poker really works.
+I've not used Streams API for matheamtical equations so I learnt  a lot more on IntStreams which is quite straightforward
+
+## What i don't like
+
+I think I can still make it simpler by creating a Record for Card and then use the Card all through rather than using hands a string.
+
+## What I like
+
+I avoided using traditional for loop in all my codebase and also used Javadoc to explain each method giving anyone who reads to understand what each method does at a glance.
+
+
