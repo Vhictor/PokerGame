@@ -11,6 +11,6 @@ public class Main {
      */
     public static void getPokerResultForPlayerOne(){
         String filename = "/poker.txt";
-        System.out.println("Player 1 wins: " + Wins.countPlayerOneWins(filename));
+        System.out.println("Player 1 wins: " + CardHandRank.countPlayerOneWins(filename));
     }
 }
