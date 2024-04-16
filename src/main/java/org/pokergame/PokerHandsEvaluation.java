@@ -7,73 +7,123 @@ import java.util.stream.IntStream;
 
 public class PokerHandsEvaluation {
 
+    /**
+     * This method evaluates hands based on Poker hand rules and return the rank and other parameters in case of tie
+     * @param hand The hand to be evaluated.
+     * @return An array representing the rank and other parameters of the hand
+     */
     public static int[] evaluateHand(String[] hand){
-        int[] values = new int[5];
-        char[] suits = new char[5];
+        int[] cardValues = new int[5];
+        char[] cardSuits = new char[5];
 
         IntStream.range(0, 5)
                 .forEach(i -> {
-                    values[i] = CardValue.getValueFromCard(hand[i]);
-                    suits[i] = hand[i].charAt(1);
+                    cardValues[i] = CardValue.getValueFromCard(hand[i]);
+                    cardSuits[i] = hand[i].charAt(1);
                 });
 
-        Arrays.sort(values);
+        Arrays.sort(cardValues);
 
         boolean isStraight = IntStream.range(0, 4)
-                .allMatch(i -> values[i] == values[i + 1] - 1);
+                .allMatch(i -> cardValues[i] == cardValues[i + 1] - 1);
 
         boolean isFlush = IntStream.range(0, 4)
-                .allMatch(i -> suits[i] == suits[i + 1]);
+                .allMatch(i -> cardSuits[i] == cardSuits[i + 1]);
 
 
         if (isStraight && isFlush) {
-            return new int[]{9, values[4]};
-        } else if (hasNNumberOfAKind(values, 4)) {
-            return new int[]{8, values[4], values[0]};
-        } else if (hasNNumberOfAKind(values, 3)) {
-            if (hasNNumberOfAKind(values, 2)){
-                System.out.println("Full house here");
-
-                int pairValue = getTripletValue(values);
-                int[] remainingCards = Arrays.stream(values)
-                        .filter(value -> value != pairValue)
-                        .toArray();
-                int[] result = new int[3];
-                result[0] = 7; // Hand rank for one pair
-                result[1] = pairValue; // Pair value
-                System.arraycopy(remainingCards, 0, result, 2, 1); // Copy remaining cards
-                return result;
+            if (cardValues[0] == CardValue.TEN.getValue() && cardValues[4] == CardValue.ACE.getValue()) {
+                return new int[]{CardValue.TEN.getValue(), 14}; // Royal Flush
             }
-            System.out.println("Three of a kind here");
-            return new int[]{4, values[4], values[3], values[0]};
+            return new int[]{CardValue.NINE.getValue(), cardValues[4]};
+        } else if (hasNNumberOfAKind(cardValues, 4)) {
+            return new int[]{CardValue.EIGHT.getValue(), cardValues[4], cardValues[0]};
+        } else if (hasNNumberOfAKind(cardValues, 3)) {
+            if (hasNNumberOfAKind(cardValues, 2)){
+                return resultForFullHouse(cardValues);
+            }
+            return resultForThreeOfAKind(cardValues);
         } else if (isFlush) {
-            return new int[]{6, values[4]};
+            return new int[]{CardValue.SIX.getValue(), cardValues[4]};
         } else if (isStraight) {
-            return new int[]{5, values[4]};
-        } else if (hasTwoPairs(values)) {
-            return new int[]{3, values[4], values[2], values[0]};
-        } else if (hasNNumberOfAKind(values, 2)) {
-            System.out.println("One Pair card with pair value " + getPairValue(values));
-
-            int pairValue = getPairValue(values);
-            int[] remainingCards = Arrays.stream(values)
-                    .filter(value -> value != pairValue)
-                    .toArray();
-
-            int[] result = new int[5];
-            result[0] = 2; // Hand rank for one pair
-            result[1] = pairValue; // Pair value
-            result[2] = findHighestNonPair(values,pairValue);
-            System.arraycopy(remainingCards, 0, result, 3, 2); // Copy remaining cards
-            return result;
-            //return new int[]{2, getPairValue(values), values[3], values[2], values[0]};
+            return new int[]{CardValue.FIVE.getValue(), cardValues[4]};
+        } else if (hasTwoPairs(cardValues)) {
+            return new int[]{CardValue.THREE.getValue(), cardValues[4], cardValues[2], cardValues[0]};
+        } else if (hasNNumberOfAKind(cardValues, 2)) {
+            return resultForOnePair(cardValues);
         } else {
-            return new int[]{1, values[4], values[3], values[2], values[1]};
+           return new int[]{CardValue.ONE.getValue(), cardValues[4], cardValues[3], cardValues[2], cardValues[1]};
         }
     }
 
+    /**
+     * This method handles the arrays returned for Three of a Kind, the rank, the triplet value and other parameters
+     * @param values The values of the cards in the hand.
+     * @return An array representing the rank and other parameters of the hand
+     */
+    private static int[] resultForThreeOfAKind(int[] values) {
+        int tripletValue = getTripletValue(values);
+        int[] remainingCards = getRemainingCards(values, tripletValue);
+
+        return IntStream.concat(
+                IntStream.of(CardValue.FOUR.getValue(), tripletValue),
+                Arrays.stream(remainingCards)
+        ).toArray();
+
+    }
+
+    /**
+     * This handles the result of one pair ensuring the arrays is arranged for comparison in case of tie
+     * @param values The values of the cards in the hand.
+     * @return An array representing the rank and other parameters of the hand
+     */
+    private static int[] resultForOnePair(int[] values) {
+        int pairValue = getPairValue(values);
+        int highestNonPair = findHighestNonPair(values, pairValue);
+        int[] remainingCards = getRemainingCards(values, pairValue);
+
+        return IntStream.concat(
+                IntStream.of(CardValue.TWO.getValue(), pairValue, highestNonPair),
+                Arrays.stream(remainingCards, 0, 2)
+        ).toArray();
+    }
+
+    /**
+     * This handles the result for a full house hand
+     * @param values The values of the cards in the hand.
+     * @return An array representing the rank and other parameters of the hand
+     */
+
+    private static int[] resultForFullHouse(int[] values) {
+        int tripletValue = getTripletValue(values);
+        int[] remainingCards = getRemainingCards(values, tripletValue);
+
+        return IntStream.concat(
+                IntStream.of(CardValue.SEVEN.getValue(), tripletValue),
+                Arrays.stream(remainingCards, 0, 1)
+        ).toArray();
+    }
 
 
+    /**
+     * Used to get remaining cards in the hands after identifying pair value
+     * @param values The values of the cards in the hand.
+     * @param pairValue The value of the pair in the hand.
+     * @return An array representing other parameters of the hand
+     */
+    private static int[] getRemainingCards(int[] values, int pairValue) {
+        return Arrays.stream(values)
+                .filter(value -> value != pairValue)
+                .toArray();
+    }
+
+
+    /**
+     * This checks the number of times value "n" is repeated in the arrays.
+     * @param values The value of the card in the hand.
+     * @param n the number of times to validate against
+     * @return Returns true if the value appears n times
+     */
     private static boolean hasNNumberOfAKind(int[] values, int n) {
         Map<Integer, Integer> valueCounts = new HashMap<>();
         for (int value : values) {
@@ -82,6 +132,12 @@ public class PokerHandsEvaluation {
         return valueCounts.containsValue(n);
     }
 
+
+    /**
+     * The checks if the array has two pairs
+     * @param values The value of the card in the hand.
+     * @return Returns true if it has two pairs
+     */
     private static boolean hasTwoPairs(int[] values) {
         long pairsCount = IntStream.range(0, 4)
                 .filter(i -> values[i] == values[i + 1])
@@ -91,6 +147,11 @@ public class PokerHandsEvaluation {
     }
 
 
+    /**
+     * Used for getting triplet value needed for Three of a kind
+     * @param rank The value of the card in the hand.
+     * @return Returns the value of the card that appear 3 times
+     */
     private static int getTripletValue(int[] rank) {
         return IntStream.range(2, rank.length)
                 .filter(i -> rank[i] == rank[i - 1] && rank[i] == rank[i - 2])
@@ -98,6 +159,13 @@ public class PokerHandsEvaluation {
                 .findFirst()
                 .orElse(-1);
     }
+
+    /**
+     * This method returns pair value in the hand
+     * @param rank The value of the card in the hand.
+     * @return Returns the pair value
+     */
+
 
     private static int getPairValue(int[] rank) {
         return IntStream.range(1, rank.length)
@@ -107,13 +175,18 @@ public class PokerHandsEvaluation {
                 .orElse(-1);
     }
 
+
+
+    /**
+     * This method get the highest non-pair value in a player's hand
+     * @param values The value of the card in the hand.
+     * @param pair The value of the pair in the hand.
+     * @return Returns the highest non pair value
+     */
     private static int findHighestNonPair(int[] values, int pair) {
-        int highestNonPair = Integer.MIN_VALUE;
-        for (int value : values) {
-            if (value != pair && value > highestNonPair) {
-                highestNonPair = value;
-            }
-        }
-        return highestNonPair;
+        return Arrays.stream(values)
+                .filter(value -> value != pair)
+                .max()
+                .orElse(Integer.MIN_VALUE);
     }
 }
