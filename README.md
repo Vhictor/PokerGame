@@ -52,13 +52,13 @@ To run the Poker Game and determine the number of hands Player 1 wins:
 1. Clone the repository:
 
     ```
-    git clone https://github.com/vhictor/pokergame.git
+    git clone https://github.com/Vhictor/PokerGame.git
     ```
 
 2. Navigate to the project directory:
 
     ```
-    cd poker-game
+    cd PokerGame
     ```
 
 3. Compile the Java source files:
