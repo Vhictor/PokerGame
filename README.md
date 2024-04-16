@@ -37,7 +37,7 @@ In the card game poker, a hand consists of five cards and is ranked according to
 - **Straight Flush**: All cards are consecutive values of the same suit.
 - **Royal Flush**: Ten, Jack, Queen, King, Ace, in the same suit.
 
-The cards are valued in the order: 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
+The cards are valued in the order: 1,2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
 
 If two players have the same ranked hands, the rank made up of the highest value wins. If ranks tie, the highest cards in each hand are compared, and so on.
 
@@ -92,4 +92,5 @@ I think I can still make it simpler by creating a Record for Card, pass value an
 
 I avoided using traditional for loop in all my codebase and also used Javadoc to explain each method giving anyone who reads it to understand what each method does at a glance.
 
+I also created two branches develop and master so I can always ensure I don't push to master branch directly.
 
